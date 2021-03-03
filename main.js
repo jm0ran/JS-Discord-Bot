@@ -33,26 +33,34 @@ client.on("message", function(message){ //On message in discord server
             for (var x = 0; x < args.length; x++){ //For each argument
                 returnMessage += args[x] + " "; //Concatinate arguments together
             }
-            console.log(returnMessage) 
             message.channel.send(returnMessage, {tts: true}); //Returns the message with thxt to speech
         }
     }
-    else if(command === "kill"){
-        if(args.length >= 1){
-            try{
-                const userId = message.mentions.users.first().id;
-                message.guild.member(userId).voice.setChannel(null);
+    else if(command === "kill"){ //Command to disconnect someone from voice chat
+        if(args.length >= 1){ //If argument length is greater than or equal to 1
+            try{ //try
+                const userId = message.mentions.users.first().id; //Grab userId of first person mentioned in message
+                message.guild.member(userId).voice.setChannel(null); //Sets that persons voice channel to null
             }
-            catch (error){
-                message.channel.send("error");
+            catch (error){ //If error
+                message.channel.send("Error"); //Send Message error
             }
             
         }
     }
-    else if(command === "kanye"){
-        const url = "https://www.youtube.com/watch?v=fbFnF-86eYs&t=1s";
-        client.player.play(message, url);
+    else if(command === "play"){ //Accepts a url as first argument and plays music
+        if(args.length == 1){ //If there is a single argument
+            client.player.play(message, args[0]); //Plays music given message and url
+        }
+        else{
+            message.channel.send('Error'); //Informs user of error
+        }
     }
+
+    else if(command === "eli"){ //Funny command for eli
+        message.channel.send("is stupid lol"); //Returns message
+    }
+
 })
 
 
