@@ -55,14 +55,14 @@ client.on("message", function(message){ //On message in discord server
 
     else if(command === "pause"){
         if(args.length == 0){ 
-            client.player.pause(message);
+            client.player.pause(message); //Pause song
         }
         else{
             message.channel.send('Error'); //Informs user of error
         }
     }
 
-    else if(command === "resume"){
+    else if(command === "resume"){ //Resumes song
         if(args.length == 0){ 
             client.player.resume(message);
         }
@@ -71,6 +71,7 @@ client.on("message", function(message){ //On message in discord server
         }
     }
 
+    //Doesnt Currently Work, need to figure this out
     else if(command === "queue"){
         message.channel.send(client.player.getQueue(message));
     }
