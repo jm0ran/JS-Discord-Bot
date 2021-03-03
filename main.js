@@ -1,12 +1,19 @@
 const userSpecific = require("./userSpecific"); //Imports userSpecific, this is where you import userSpecific data such as your bot's token
 const Discord = require("discord.js"); //Imports DiscordJS
+const { Player } = require("discord-player"); 
 
 const client = new Discord.Client(); //Creates a new client/bot
+const player = new Player(client);
+client.player = player;
+
 const prefix = "~";
+
+var playingMusic = false;
 
 client.once('ready', function(){ //Runs once on client startup
     console.log("Start Up Initiated"); //Logs an initialization message
 })
+
 
 client.on("message", function(message){ //On message in discord server
     if(!message.content.startsWith(prefix) || message.author.bot){ //If message doesnt start with set prefix or message author is bot
@@ -15,6 +22,9 @@ client.on("message", function(message){ //On message in discord server
 
     const args = message.content.slice(prefix.length).split(" "); //Remove first character (the prefix) and splits remaining words into arguments
     const command = args.shift().toLowerCase(); //Removes the first element from array, returns it, and makes it lower case
+
+
+    client.player.on('trackStart', (message, track) => message.channel.send("Game Start"))
 
 
     if(command === "echo"){ //If command is equal to echo, 3 equals sign 
@@ -34,10 +44,14 @@ client.on("message", function(message){ //On message in discord server
                 message.guild.member(userId).voice.setChannel(null);
             }
             catch (error){
-                message.channel.send(error);
+                message.channel.send("error");
             }
             
         }
+    }
+    else if(command === "kanye"){
+        const url = "https://www.youtube.com/watch?v=fbFnF-86eYs&t=1s";
+        client.player.play(message, url);
     }
 })
 
