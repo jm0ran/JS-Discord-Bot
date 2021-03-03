@@ -23,10 +23,6 @@ client.on("message", function(message){ //On message in discord server
     const args = message.content.slice(prefix.length).split(" "); //Remove first character (the prefix) and splits remaining words into arguments
     const command = args.shift().toLowerCase(); //Removes the first element from array, returns it, and makes it lower case
 
-
-    client.player.on('trackStart', (message, track) => message.channel.send("Game Start"))
-
-
     if(command === "echo"){ //If command is equal to echo, 3 equals sign 
         if (args.length >= 1){ //If arguments has 1
             var returnMessage = ""; //Creates a varaible for return message
@@ -55,6 +51,28 @@ client.on("message", function(message){ //On message in discord server
         else{
             message.channel.send('Error'); //Informs user of error
         }
+    }
+
+    else if(command === "pause"){
+        if(args.length == 0){ 
+            client.player.pause(message);
+        }
+        else{
+            message.channel.send('Error'); //Informs user of error
+        }
+    }
+
+    else if(command === "resume"){
+        if(args.length == 0){ 
+            client.player.resume(message);
+        }
+        else{
+            message.channel.send('Error'); //Informs user of error
+        }
+    }
+
+    else if(command === "queue"){
+        message.channel.send(client.player.getQueue(message));
     }
 
     else if(command === "eli"){ //Funny command for eli
