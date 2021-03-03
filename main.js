@@ -17,17 +17,28 @@ client.on("message", function(message){ //On message in discord server
     const command = args.shift().toLowerCase(); //Removes the first element from array, returns it, and makes it lower case
 
 
-    if(command === "echo"){
-        if (args.length >= 1){
-            var returnMessage = "";
-            for (var x = 0; x < args.length; x++){
-                returnMessage += args[x] + " ";
+    if(command === "echo"){ //If command is equal to echo, 3 equals sign 
+        if (args.length >= 1){ //If arguments has 1
+            var returnMessage = ""; //Creates a varaible for return message
+            for (var x = 0; x < args.length; x++){ //For each argument
+                returnMessage += args[x] + " "; //Concatinate arguments together
             }
-            console.log(returnMessage)
-            message.channel.send(returnMessage, {tts: true});
+            console.log(returnMessage) 
+            message.channel.send(returnMessage, {tts: true}); //Returns the message with thxt to speech
         }
     }
-
+    else if(command === "kill"){
+        if(args.length >= 1){
+            try{
+                const userId = message.mentions.users.first().id;
+                message.guild.member(userId).voice.setChannel(null);
+            }
+            catch (error){
+                message.channel.send(error);
+            }
+            
+        }
+    }
 })
 
 
