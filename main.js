@@ -1,6 +1,8 @@
 const userSpecific = require("./userSpecific"); //Imports userSpecific, this is where you import userSpecific data such as your bot's token
 const Discord = require("discord.js"); //Imports DiscordJS
-const { Player } = require("discord-player"); 
+const { Player } = require("discord-player");
+const request = require("request");
+const cheerio = require("cheerio"); 
 
 const client = new Discord.Client(); //Creates a new client/bot
 const player = new Player(client);
@@ -9,6 +11,7 @@ client.player = player;
 const prefix = "~";
 
 var playingMusic = false;
+
 
 client.once('ready', function(){ //Runs once on client startup
     console.log("Start Up Initiated"); //Logs an initialization message
@@ -71,6 +74,23 @@ client.on("message", function(message){ //On message in discord server
         }
     }
 
+    else if(command === "random-anime"){
+        request("http://" + userSpecific.plexAddress + ":32400/library/sections/6/all?X-Plex-Token=" + userSpecific.plexToken, (error, response, html) => {
+            if(!error && response.statusCode == 200){
+                const $ = cheerio.load(html);
+                var results = new Array;
+                $("Directory").each((index, a) =>{
+                    results.push("**Title:** " + $(a).attr("title") + "\n**Summary:** " + $(a).attr("summary"));
+                })
+                
+                message.channel.send(results[Math.floor(Math.random() * results.length)]);
+            }
+            else{
+                console.log("connection error")
+            }
+        })
+    }
+
     //Doesnt Currently Work, need to figure this out
     else if(command === "queue"){
         message.channel.send(client.player.getQueue(message));
@@ -83,4 +103,4 @@ client.on("message", function(message){ //On message in discord server
 })
 
 
-client.login(userSpecific.token); //Logs into client using token from the userSpecific, keep at end
+client.login(userSpecific.discordToken); //Logs into client using token from the userSpecific, keep at end
