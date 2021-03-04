@@ -74,19 +74,19 @@ client.on("message", function(message){ //On message in discord server
         }
     }
 
-    else if(command === "random-anime"){
-        request("http://" + userSpecific.plexAddress + ":32400/library/sections/6/all?X-Plex-Token=" + userSpecific.plexToken, (error, response, html) => {
-            if(!error && response.statusCode == 200){
-                const $ = cheerio.load(html);
-                var results = new Array;
-                $("Directory").each((index, a) =>{
-                    results.push("**Title:** " + $(a).attr("title") + "\n**Summary:** " + $(a).attr("summary"));
+    else if(command === "random-anime"){ //Command to return a random anime from connected plex library
+        request("http://" + userSpecific.plexAddress + ":32400/library/sections/6/all?X-Plex-Token=" + userSpecific.plexToken, (error, response, html) => { //Connects to the plex library using provided address and token
+            if(!error && response.statusCode == 200){ //If no error and success code
+                const $ = cheerio.load(html); //Load html with cheerio
+                var results = new Array; //Create a new array for results
+                $("Directory").each((index, a) =>{ //For each directory tag in results
+                    results.push("**Title:** " + $(a).attr("title") + "\n**Summary:** " + $(a).attr("summary")); //Create messages for each item
                 })
                 
-                message.channel.send(results[Math.floor(Math.random() * results.length)]);
+                message.channel.send(results[Math.floor(Math.random() * results.length)]); //Push a random message
             }
             else{
-                console.log("connection error")
+                console.log("connection error") //If issue occurs log error
             }
         })
     }
