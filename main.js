@@ -90,6 +90,32 @@ client.on("message", function(message){ //On message in discord server
             }
         })
     }
+	
+	else if(command === "recent"){
+		request("http://" + userSpecific.plexAddress + ":32400/library/sections/6/recentlyAdded?X-Plex-Token=" + userSpecific.plexToken, (error, response, html) => { //Connects to the plex library using provided address and token
+		    if(!error && response.statusCode == 200){ //If no error and success code
+		        const $ = cheerio.load(html); //Load html with cheerio
+		        var results = new Array; //Create a new array for results
+		        var content = $("Video").each((index, a) =>{
+					if (index < 5){
+						results.push($(a).attr("grandparenttitle") + ": " + $(a).attr("title"));
+					}else{return false}
+		        });
+		        
+				var formatted = new String;
+		
+				for (var x = 0; x < results.length; x++){
+					formatted += results[x] + "\n";
+				}
+				
+				message.channel.send(formatted);
+				
+		    }
+		    else{
+		        console.log("connection error") //If issue occurs log error
+		    }
+		})
+	}
 
     //Doesnt Currently Work, need to figure this out
     else if(command === "queue"){
