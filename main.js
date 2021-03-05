@@ -74,6 +74,24 @@ client.on("message", function(message){ //On message in discord server
         }
     }
 
+    else if(command === "skip"){ //Resumes song
+        if(args.length == 0){ 
+            client.player.skip(message);
+        }
+        else{
+            message.channel.send('Error'); //Informs user of error
+        }
+    }
+
+    else if(command === "leave"){ //Resumes song
+        if(args.length == 0){ 
+            client.player.stop(message);
+        }
+        else{
+            message.channel.send('Error'); //Informs user of error
+        }
+    }
+
     else if(command === "random-anime"){ //Command to return a random anime from connected plex library
         request("http://" + userSpecific.plexAddress + ":32400/library/sections/6/all?X-Plex-Token=" + userSpecific.plexToken, (error, response, html) => { //Connects to the plex library using provided address and token
             if(!error && response.statusCode == 200){ //If no error and success code
