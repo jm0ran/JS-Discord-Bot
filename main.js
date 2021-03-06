@@ -115,10 +115,11 @@ client.on("message", function(message){ //On message in discord server
 		        const $ = cheerio.load(html); //Load html with cheerio
 		        var results = new Array; //Create a new array for results
 		        var content = $("Video").each((index, a) =>{
-					if (index < 5){ //Runs for top 5
+					if (index < 3){ //Runs for top 5
                         let newEmbed = new Discord.MessageEmbed()
                             .setColor('#0099ff')
-                            .setTitle($(a).attr("grandparenttitle") + ": " + $(a).attr("title"));
+                            .setTitle($(a).attr("grandparenttitle") + ": " + $(a).attr("title"))
+                            .setImage("https://artworks.thetvdb.com/banners/posters/305089-2.jpg");
 
 						results.push(newEmbed);
 					}else{return false} //If has run for first 5 return false which will break from .each()
