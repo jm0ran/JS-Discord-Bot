@@ -92,16 +92,22 @@ client.on("message", function(message){ //On message in discord server
         }
     }
 
-    else if(command === "random-anime"){ //Command to return a random anime from connected plex library
+    else if(command === "random"){ //Command to return a random anime from connected plex library
         request("http://" + userSpecific.plexAddress + ":32400/library/sections/6/all?X-Plex-Token=" + userSpecific.plexToken, (error, response, html) => { //Connects to the plex library using provided address and token
             if(!error && response.statusCode == 200){ //If no error and success code
                 const $ = cheerio.load(html); //Load html with cheerio
-                var results = new Array; //Create a new array for results
+                var elements = new Array;
                 $("Directory").each((index, a) =>{ //For each directory tag in results
-                    results.push("**Title:** " + $(a).attr("title") + "\n**Summary:** " + $(a).attr("summary")); //Create messages for each item
+                    elements.push(a)
                 })
-                
-                message.channel.send(results[Math.floor(Math.random() * results.length)]); //Push a random message
+                const randomNum = Math.floor(Math.random() * elements.length);
+
+                let newEmbed = new Discord.MessageEmbed()
+                            .setColor('#0099ff')
+                            .setTitle($(elements[randomNum]).attr("title"))
+                            .setDescription("**Summary:** " + $(elements[randomNum]).attr("summary"));
+
+                message.channel.send(newEmbed); //Push a random message
             }
             else{
                 console.log("connection error") //If issue occurs log error
