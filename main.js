@@ -105,7 +105,9 @@ client.on("message", function(message){ //On message in discord server
                 let newEmbed = new Discord.MessageEmbed()
                             .setColor('#0099ff')
                             .setTitle($(elements[randomNum]).attr("title"))
-                            .setDescription("**Summary:** " + $(elements[randomNum]).attr("summary"));
+                            .setDescription("**Summary:** " + $(elements[randomNum]).attr("summary"))
+                            .attachFiles("http://" + userSpecific.plexAddress + ":32400" + $(elements[randomNum]).attr("thumb") + ".png?X-Plex-Token=" + userSpecific.plexToken)
+                            .setImage("attachment://" + $(elements[randomNum]).attr("updatedat") + ".png");
 
                 message.channel.send(newEmbed); //Push a random message
             }
@@ -125,7 +127,8 @@ client.on("message", function(message){ //On message in discord server
                         let newEmbed = new Discord.MessageEmbed()
                             .setColor('#0099ff')
                             .setTitle($(a).attr("grandparenttitle") + ": " + $(a).attr("title"))
-                            .setImage("https://artworks.thetvdb.com/banners/posters/305089-2.jpg");
+                            .attachFiles("http://" + userSpecific.plexAddress + ":32400" + $(a).attr("grandparentthumb") + ".png?X-Plex-Token=" + userSpecific.plexToken)
+                            .setImage("attachment://" + $(a).attr("updatedat") + ".png");
 
 						results.push(newEmbed);
 					}else{return false} //If has run for first 5 return false which will break from .each()
