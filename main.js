@@ -116,17 +116,18 @@ client.on("message", function(message){ //On message in discord server
 		        var results = new Array; //Create a new array for results
 		        var content = $("Video").each((index, a) =>{
 					if (index < 5){ //Runs for top 5
-						results.push($(a).attr("grandparenttitle") + ": " + $(a).attr("title")); //Formats text 1st stage
+                        let newEmbed = new Discord.MessageEmbed()
+                            .setColor('#0099ff')
+                            .setTitle($(a).attr("grandparenttitle") + ": " + $(a).attr("title"));
+
+						results.push(newEmbed);
 					}else{return false} //If has run for first 5 return false which will break from .each()
 		        });
-		        
-				var formatted = new String; //New variable for formatted text
-		
-				for (var x = 0; x < results.length; x++){ //for each result
-					formatted += results[x] + "\n"; //Add to formatted string and move to a new Line
-				}
 				
-				message.channel.send(formatted); //Send formatted text as a message
+                for(var x = 0; x < results.length; x++){
+                    message.channel.send(results[x]); //Send formatted text as a message
+                }
+				
 				
 		    }
 		    else{
