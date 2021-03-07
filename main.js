@@ -66,7 +66,10 @@ client.on("message", function(message){ //On message in discord server
 		client.commands.get("recent").execute(message, args, request, cheerio, Discord, userSpecific);
 	}
     else if(command === "uptime"){
-        client.commands.get("uptime").execute(message, args, Discord, uptime())
+        client.commands.get("uptime").execute(message, args, Discord, uptime());
+    }
+    else if(command === "interrupt"){
+        client.commands.get("interrupt").execute(message, args);
     }
 
 
