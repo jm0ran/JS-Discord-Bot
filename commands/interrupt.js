@@ -6,6 +6,6 @@ module.exports = {
         fMember.voice.setMute(true); 
         setTimeout(() => {
             fMember.voice.setMute(false); 
-        }, 500)
+        }, 2000)
     }
 }
