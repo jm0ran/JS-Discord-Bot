@@ -4,6 +4,7 @@ const { Player } = require("discord-player");
 const request = require("request");
 const cheerio = require("cheerio"); 
 const fs = require('fs');
+const { uptime } = require("process");
 
 const client = new Discord.Client(); //Creates a new client/bot
 
@@ -64,6 +65,9 @@ client.on("message", function(message){ //On message in discord server
 	else if(command === "recent"){
 		client.commands.get("recent").execute(message, args, request, cheerio, Discord, userSpecific);
 	}
+    else if(command === "uptime"){
+        client.commands.get("uptime").execute(message, args, Discord, uptime())
+    }
 
 
 

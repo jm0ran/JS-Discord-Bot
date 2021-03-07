@@ -11,7 +11,7 @@ module.exports = {
             })
             const randomNum = Math.floor(Math.random() * elements.length);
 
-            let newEmbed = new Discord.MessageEmbed()
+            const newEmbed = new Discord.MessageEmbed()
                         .setColor('#0099ff')
                         .setTitle($(elements[randomNum]).attr("title"))
                         .setDescription("**Summary:** " + $(elements[randomNum]).attr("summary"))
