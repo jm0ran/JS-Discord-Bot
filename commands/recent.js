@@ -18,8 +18,8 @@ module.exports = {
                     }else{return false} //If has run for first 5 return false which will break from .each()
                 });
                 
-                for(var x = 0; x < results.length; x++){
-                    message.channel.send(results[x]); //Send formatted text as a message
+                for(const item of results){
+                    message.channel.send(item); //Send formatted text as a message
                 }
                 
                 
