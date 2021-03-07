@@ -3,8 +3,19 @@ const Discord = require("discord.js"); //Imports DiscordJS
 const { Player } = require("discord-player");
 const request = require("request");
 const cheerio = require("cheerio"); 
+const fs = require('fs');
 
 const client = new Discord.Client(); //Creates a new client/bot
+
+client.commands = new Discord.Collection();
+
+const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith(".js"))
+for(const file of commandFiles){ //New type of for loop syntax
+    const command = require(`./commands/${file}`);
+    client.commands.set(command.name, command);
+}
+
+
 const player = new Player(client);
 client.player = player;
 
@@ -27,126 +38,36 @@ client.on("message", function(message){ //On message in discord server
     const command = args.shift().toLowerCase(); //Removes the first element from array, returns it, and makes it lower case
 
     if(command === "echo"){ //If command is equal to echo, 3 equals sign 
-        if (args.length >= 1){ //If arguments has 1
-            var returnMessage = ""; //Creates a varaible for return message
-            for (var x = 0; x < args.length; x++){ //For each argument
-                returnMessage += args[x] + " "; //Concatinate arguments together
-            }
-            message.channel.send(returnMessage, {tts: true}); //Returns the message with thxt to speech
-        }
+        client.commands.get("echo").execute(message, args);
     }
     else if(command === "kill"){ //Command to disconnect someone from voice chat
-        if(args.length >= 1){ //If argument length is greater than or equal to 1
-            try{ //try
-                const userId = message.mentions.users.first().id; //Grab userId of first person mentioned in message
-                message.guild.member(userId).voice.setChannel(null); //Sets that persons voice channel to null
-            }
-            catch (error){ //If error
-                message.channel.send("Error"); //Send Message error
-            }
-            
-        }
+        client.commands.get("kill").execute(message, args);
     }
     else if(command === "play"){ //Accepts a url as first argument and plays music
-        if(args.length == 1){ //If there is a single argument
-            client.player.play(message, args[0]); //Plays music given message and url
-        }
-        else{
-            message.channel.send('Error'); //Informs user of error
-        }
+        client.commands.get("play").execute(message, args, client);
     }
-
-    else if(command === "pause"){
-        if(args.length == 0){ 
-            client.player.pause(message); //Pause song
-        }
-        else{
-            message.channel.send('Error'); //Informs user of error
-        }
+    else if(command === "pause"){ //Pauses song
+        client.commands.get("pause").execute(message, args, client);
     }
-
     else if(command === "resume"){ //Resumes song
-        if(args.length == 0){ 
-            client.player.resume(message);
-        }
-        else{
-            message.channel.send('Error'); //Informs user of error
-        }
+        client.commands.get("resume").execute(message, args, client);
     }
-
     else if(command === "skip"){ //Resumes song
-        if(args.length == 0){ 
-            client.player.skip(message);
-        }
-        else{
-            message.channel.send('Error'); //Informs user of error
-        }
+        client.commands.get("skip").execute(message, args, client);
     }
-
     else if(command === "leave"){ //Resumes song
-        if(args.length == 0){ 
-            client.player.stop(message);
-        }
-        else{
-            message.channel.send('Error'); //Informs user of error
-        }
+        client.commands.get("leave").execute(message, args, client);
     }
-
     else if(command === "random"){ //Command to return a random anime from connected plex library
-        request("http://" + userSpecific.plexAddress + ":32400/library/sections/6/all?X-Plex-Token=" + userSpecific.plexToken, (error, response, html) => { //Connects to the plex library using provided address and token
-            if(!error && response.statusCode == 200){ //If no error and success code
-                const $ = cheerio.load(html); //Load html with cheerio
-                var elements = new Array;
-                $("Directory").each((index, a) =>{ //For each directory tag in results
-                    elements.push(a)
-                })
-                const randomNum = Math.floor(Math.random() * elements.length);
-
-                let newEmbed = new Discord.MessageEmbed()
-                            .setColor('#0099ff')
-                            .setTitle($(elements[randomNum]).attr("title"))
-                            .setDescription("**Summary:** " + $(elements[randomNum]).attr("summary"))
-                            .attachFiles("http://" + userSpecific.plexAddress + ":32400" + $(elements[randomNum]).attr("thumb") + ".png?X-Plex-Token=" + userSpecific.plexToken)
-                            .setImage("attachment://" + $(elements[randomNum]).attr("updatedat") + ".png");
-
-                message.channel.send(newEmbed); //Push a random message
-            }
-            else{
-                console.log("connection error") //If issue occurs log error
-            }
-        })
+        client.commands.get("random").execute(message, args, request, cheerio, Discord, userSpecific);
     }
-	
 	else if(command === "recent"){
-		request("http://" + userSpecific.plexAddress + ":32400/library/sections/6/recentlyAdded?X-Plex-Token=" + userSpecific.plexToken, (error, response, html) => { //Connects to the plex library using provided address and token
-		    if(!error && response.statusCode == 200){ //If no error and success code
-		        const $ = cheerio.load(html); //Load html with cheerio
-		        var results = new Array; //Create a new array for results
-		        var content = $("Video").each((index, a) =>{
-					if (index < 3){ //Runs for top 5
-                        let newEmbed = new Discord.MessageEmbed()
-                            .setColor('#0099ff')
-                            .setTitle($(a).attr("grandparenttitle") + ": " + $(a).attr("title"))
-                            .attachFiles("http://" + userSpecific.plexAddress + ":32400" + $(a).attr("grandparentthumb") + ".png?X-Plex-Token=" + userSpecific.plexToken)
-                            .setImage("attachment://" + $(a).attr("updatedat") + ".png");
-
-						results.push(newEmbed);
-					}else{return false} //If has run for first 5 return false which will break from .each()
-		        });
-				
-                for(var x = 0; x < results.length; x++){
-                    message.channel.send(results[x]); //Send formatted text as a message
-                }
-				
-				
-		    }
-		    else{
-		        console.log("connection error") //If issue occurs log error
-		    }
-		})
+		client.commands.get("recent").execute(message, args, request, cheerio, Discord, userSpecific);
 	}
 
-    //Doesnt Currently Work, need to figure this out
+
+
+    //When I rework/keep these commands they need to be made external
     else if(command === "queue"){
         message.channel.send(client.player.getQueue(message));
     }
