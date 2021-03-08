@@ -48,16 +48,16 @@ client.on("message", function(message){ //On message in discord server
         client.commands.get("play").execute(message, args, client);
     }
     else if(command === "pause"){ //Pauses song
-        client.commands.get("pause").execute(message, args, client);
+        client.commands.get("pause").execute(message, args, client, Discord);
     }
     else if(command === "resume"){ //Resumes song
-        client.commands.get("resume").execute(message, args, client);
+        client.commands.get("resume").execute(message, args, client, Discord);
     }
     else if(command === "skip"){ //Resumes song
-        client.commands.get("skip").execute(message, args, client);
+        client.commands.get("skip").execute(message, args, client, Discord);
     }
     else if(command === "leave"){ //Resumes song
-        client.commands.get("leave").execute(message, args, client);
+        client.commands.get("leave").execute(message, args, client, Discord);
     }
     else if(command === "random"){ //Command to return a random anime from connected plex library
         client.commands.get("random").execute(message, args, request, cheerio, Discord, userSpecific);
