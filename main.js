@@ -62,26 +62,23 @@ client.on("message", function(message){ //On message in discord server
     else if(command === "random"){ //Command to return a random anime from connected plex library
         client.commands.get("random").execute(message, args, request, cheerio, Discord, userSpecific);
     }
-	else if(command === "recent"){
+	else if(command === "recent"){ //Command to return recently added anime to plex server
 		client.commands.get("recent").execute(message, args, request, cheerio, Discord, userSpecific);
 	}
-    else if(command === "uptime"){
+    else if(command === "uptime"){ //Command to return server uptime
         client.commands.get("uptime").execute(message, args, Discord, uptime());
     }
-    else if(command === "interrupt"){
+    else if(command === "interrupt"){ //Command to interrupt a given user
         client.commands.get("interrupt").execute(message, args);
     }
 
 
 
-    //When I rework/keep these commands they need to be made external
+    //Queue Does not currently work, I need to look more into documentation
     else if(command === "queue"){
         message.channel.send(client.player.getQueue(message));
     }
 
-    else if(command === "eli"){ //Funny command for eli
-        message.channel.send("is stupid lol"); //Returns message
-    }
 
 })
 
