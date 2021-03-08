@@ -5,22 +5,28 @@ module.exports = {
         request("http://" + userSpecific.plexAddress + ":32400/library/sections/6/recentlyAdded?X-Plex-Token=" + userSpecific.plexToken, (error, response, html) => { //Connects to the plex library using provided address and token
             if(!error && response.statusCode == 200){ //If no error and success code
                 const $ = cheerio.load(html); //Load html with cheerio
-                var results = new Array; //Create a new array for results
+                var description = new String; //Create a new array for results
+                var thumbName = null;
+                var thumbPath = null;
                 var content = $("Video").each((index, a) =>{
                     if (index < 3){ //Runs for top 5
-                        let newEmbed = new Discord.MessageEmbed()
-                            .setColor('#0099ff')
-                            .setTitle($(a).attr("grandparenttitle") + ": " + $(a).attr("title"))
-                            .attachFiles("http://" + userSpecific.plexAddress + ":32400" + $(a).attr("grandparentthumb") + ".png?X-Plex-Token=" + userSpecific.plexToken)
-                            .setImage("attachment://" + $(a).attr("updatedat") + ".png");
-
-                        results.push(newEmbed);
-                    }else{return false} //If has run for first 5 return false which will break from .each()
+                        if (index == 0){
+                            thumbPath = "http://" + userSpecific.plexAddress + ":32400" + $(a).attr("grandparentthumb") + ".png?X-Plex-Token=" + userSpecific.plexToken;
+                            thumbName = "attachment://" + $(a).attr("updatedat") + ".png";
+                        }
+                        description += "**" + $(a).attr("grandparenttitle") + "**: " + $(a).attr("title") + "\n";
+                    }
+                    else{return false} //If has run for first 5 return false which will break from .each()
                 });
+
+                let newEmbed = new Discord.MessageEmbed()
+                            .setColor('#0099ff')
+                            .setTitle("Recently Added Anime")
+                            .setDescription(description)
+                            .attachFiles(thumbPath)
+                            .setThumbnail(thumbName);
                 
-                for(const item of results){
-                    message.channel.send(item); //Send formatted text as a message
-                }
+                message.channel.send(newEmbed);
                 
                 
             }
